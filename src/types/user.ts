@@ -1,10 +1,10 @@
 // 用户信息类型
-export interface UserInfo {
+export interface UserAuth {
   nickname: string;
   token: string;
 }
 
-export interface User {
+export interface UserInfo {
   id?: string;
   username?: string;
   email?: string;

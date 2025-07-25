@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type User } from "../types/user";
+import { type UserInfo } from "../types/user";
 
 interface UserStore {
   isAuthenticated: boolean;
-  user: User | null;
+  user: UserInfo | null;
   token: string | null;
   loading: boolean;
   error: string | null;
