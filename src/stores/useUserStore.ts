@@ -29,7 +29,7 @@ export const useUserStore = create<UserStore>()(
 
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
-      clearError: () => set({}),
+      clearError: () => set({ error: null }),
     }),
     {
       name: "auth-storage",
