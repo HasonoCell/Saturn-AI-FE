@@ -1,16 +1,36 @@
 import { createBrowserRouter } from "react-router";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import ErrorBoundary from "../components/Common/ErrorBoundary/ErrorBoundary";
+import App from "../App";
+import { Home, Login, Register } from "../pages";
+import { Layout, Transition, ErrorBoundary } from "../components";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
-    Component: Login,
-  },
-  {
-    path: "/register",
-    Component: Register,
+    path: "/",
+    Component: App,
+    children: [
+      {
+        Component: Transition,
+        children: [
+          {
+            path: "login",
+            Component: Login,
+          },
+          {
+            path: "register",
+            Component: Register,
+          },
+        ],
+      },
+      {
+        Component: Layout,
+        children: [
+          {
+            path: "home",
+            Component: Home,
+          },
+        ],
+      },
+    ],
   },
   {
     path: "*",

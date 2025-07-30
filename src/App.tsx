@@ -1,8 +1,8 @@
-import { RouterProvider } from "react-router";
-import router from "./router";
+import { Outlet } from "react-router";
 
-const App = () => {
-  return <RouterProvider router={router} />;
-};
-
+const App = () => (
+  <div className="min-h-screen">
+    <Outlet />
+  </div>
+);
 export default App;
