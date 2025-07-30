@@ -11,7 +11,7 @@ import { userService } from "../services/userServices";
 
 /*
   interface AxiosResponse<T = any> {
-    data: T;           // 服务器返回的实际数据（比如ResponseData<T>）
+    data: ResponseData<T>;           // 服务器返回的实际数据（在这里就是ResponseData<T>）
     status: number;    // HTTP 状态码（如 200、404）
     statusText: string;// 状态文本（如 "OK"）
     headers: any;      // 响应头
@@ -73,16 +73,16 @@ instance.interceptors.response.use(
   }
 );
 
-export const request = <T, P>(
+export const request = async <T, P>(
   url: string,
   method: Method = "GET",
   submitData?: P
 ): Promise<ResponseData<T>> => {
-  return instance
+  const res = await instance
     .request<ResponseData<T>>({
       url,
       method,
       [method.toUpperCase() === "GET" ? "params" : "data"]: submitData,
-    })
-    .then((res) => res as unknown as ResponseData<T>);
+    });
+  return res as unknown as ResponseData<T>;
 };
