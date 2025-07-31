@@ -56,7 +56,7 @@ instance.interceptors.response.use(
       Message.error(message || "登录失败!");
     }
 
-    // 返回的 ResponseData<T>
+    // 数据剥离，直接返回 ResponseData<T>
     return response.data;
   },
   (error: AxiosError) => {

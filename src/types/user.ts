@@ -7,7 +7,6 @@ export interface UserAuth {
 export interface UserInfo {
   id?: string;
   username?: string;
-  email?: string;
   avatar?: string;
   nickname: string;
 }

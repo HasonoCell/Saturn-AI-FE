@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { AuthLayout, AuthForm } from "../../components";
+import {
+  AuthLayout,
+  AuthLoginForm,
+  AuthToggleLink,
+  AuthFooter,
+} from "../../components";
 import { userService } from "../../services";
 import { message as Message } from "antd";
 import { useLocation, useNavigate } from "react-router";
@@ -29,7 +34,9 @@ const Login = () => {
 
   return (
     <AuthLayout title="登录">
-      <AuthForm onSubmit={handleSubmit} loading={loading}></AuthForm>
+      <AuthLoginForm onSubmit={handleSubmit} loading={loading} />
+      <AuthToggleLink isLogin={true} />
+      <AuthFooter />
     </AuthLayout>
   );
 };

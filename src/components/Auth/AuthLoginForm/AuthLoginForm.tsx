@@ -2,7 +2,7 @@ import type React from "react";
 import type { AuthFormProps } from "./types";
 import { useState, type FormEvent } from "react";
 
-const AuthForm: React.FC<AuthFormProps> = ({
+const AuthLoginForm: React.FC<AuthFormProps> = ({
   onSubmit,
   loading,
   buttonText = "登录",
@@ -13,7 +13,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   const [password, setPassword] = useState("");
 
   const inputClass: string =
-    "w-full px-4 py-3 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 select-none disabled:bg-gray-100 disabled:cursor-not-allowed";
+    "w-full px-4 py-3 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 select-none disabled:bg-gray-100 disabled:cursor-not-allowed";
   const buttonClass: string =
     "w-full py-3 rounded-md bg-orange-400 text-white transition hover:bg-orange-500 disabled:bg-orange-200 select-none disabled:cursor-not-allowed";
 
@@ -51,4 +51,4 @@ const AuthForm: React.FC<AuthFormProps> = ({
   );
 };
 
-export default AuthForm;
+export default AuthLoginForm;
