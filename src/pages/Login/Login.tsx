@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AuthLayout, AuthForm } from "../../components";
-import { userService } from "../../services/userServices";
+import { userService } from "../../services";
 import { message as Message } from "antd";
 import { useLocation, useNavigate } from "react-router";
 import type { LoginParams } from "../../types/user";

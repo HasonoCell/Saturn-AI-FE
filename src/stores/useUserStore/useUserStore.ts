@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { type UserInfo } from "../types/user";
-
-interface UserStore {
-  isAuthenticated: boolean;
-  user: UserInfo | null;
-  token: string | null;
-  error: string | null;
-
-  setError: (error: string | null) => void;
-  clearError: () => void;
-}
+import type { UserStore } from "./types";
 
 const userState: Partial<UserStore> = JSON.parse(
   localStorage.getItem("auth-storage") || "{}"

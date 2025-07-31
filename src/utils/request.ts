@@ -7,7 +7,7 @@ import axios, {
 import { useUserStore } from "../stores";
 import { message as Message } from "antd";
 import router from "../router";
-import { userService } from "../services/userServices";
+import { userService } from "../services";
 
 /*
   interface AxiosResponse<T = any> {
@@ -78,11 +78,10 @@ export const request = async <T, P>(
   method: Method = "GET",
   submitData?: P
 ): Promise<ResponseData<T>> => {
-  const res = await instance
-    .request<ResponseData<T>>({
-      url,
-      method,
-      [method.toUpperCase() === "GET" ? "params" : "data"]: submitData,
-    });
+  const res = await instance.request<ResponseData<T>>({
+    url,
+    method,
+    [method.toUpperCase() === "GET" ? "params" : "data"]: submitData,
+  });
   return res as unknown as ResponseData<T>;
 };
