@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "../App";
 import { Home, Login, Register } from "../pages";
-import { Layout, Transition, ErrorBoundary } from "../components";
+import { AILayout, AuthTransition, ErrorBoundary } from "../components";
 
 const router = createBrowserRouter([
   {
@@ -9,7 +9,7 @@ const router = createBrowserRouter([
     Component: App,
     children: [
       {
-        Component: Transition,
+        Component: AuthTransition,
         children: [
           {
             path: "login",
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        Component: Layout,
+        Component: AILayout,
         children: [
           {
             path: "home",

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
-import { Permission } from "../index";
+import { Permission } from "../../Common";
 
-const Layout = () => {
+const AILayout = () => {
   return (
     <Permission>
       <Outlet />
@@ -9,4 +9,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AILayout;

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 
-const Transition = () => {
+const AuthTransition = () => {
   return <Outlet />;
 };
 
-export default Transition;
+export default AuthTransition;

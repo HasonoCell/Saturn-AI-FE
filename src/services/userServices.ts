@@ -2,15 +2,14 @@ import { useUserStore } from "../stores";
 import { authAPI } from "../apis/user";
 import type { LoginParams, RegisterParams } from "../types/user";
 
-const resetLoadingAndError = () => {
-  useUserStore.getState().setLoading(true);
+const resetError = () => {
   useUserStore.getState().setError(null);
 };
 
 export const userService = {
   async login(params: LoginParams) {
     try {
-      resetLoadingAndError();
+      resetError();
 
       const response = await authAPI.login(params);
 
@@ -19,16 +18,14 @@ export const userService = {
           isAuthenticated: true,
           token: response.data.token,
           error: null,
-          loading: true,
           user: { nickname: response.data.nickname },
         });
         return;
       }
 
-      throw new Error(response.message || "账号出错，登录失败");
+      throw new Error(response.message || "账号或密码出错，登录失败");
     } catch (error) {
       useUserStore.setState({
-        loading: false,
         error: error instanceof Error ? error.message : "网络出错，登录失败",
       });
       throw error;
@@ -37,7 +34,7 @@ export const userService = {
 
   async register(params: RegisterParams) {
     try {
-      resetLoadingAndError();
+      resetError();
 
       const response = await authAPI.register(params);
 
@@ -50,10 +47,9 @@ export const userService = {
         return;
       }
 
-      throw new Error(response.message || "账号出错，注册失败");
+      throw new Error(response.message || "账号或密码出错，注册失败");
     } catch (error) {
       useUserStore.setState({
-        loading: false,
         error: error instanceof Error ? error.message : "网络出错，注册失败",
       });
       throw error;
@@ -64,7 +60,6 @@ export const userService = {
     useUserStore.setState({
       isAuthenticated: false,
       user: null,
-      loading: false,
       token: null,
       error: null,
     });
