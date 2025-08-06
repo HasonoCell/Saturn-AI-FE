@@ -1,14 +1,15 @@
-// 用户信息类型
+// 用户数据类型
+export interface UserInfo {
+  id: string;
+  username: string;
+  nickname: string;
+  avatar?: string;
+}
+
+// 后端返回数据类型
 export interface UserAuth {
   nickname: string;
   token: string;
-}
-
-export interface UserInfo {
-  id?: string;
-  username?: string;
-  avatar?: string;
-  nickname: string;
 }
 
 // 登录请求参数

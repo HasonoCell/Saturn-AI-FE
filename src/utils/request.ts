@@ -27,10 +27,10 @@ export interface ResponseData<T> {
   code: number | string;
 }
 
-const whiteList = ["/users/login", "/users/register"];
+const whiteList = ["/user/login", "/user/register"];
 
 const instance = axios.create({
-  baseURL: "http://example.com",
+  baseURL: "http://localhost:3000",
   timeout: 30000,
 });
 
@@ -53,7 +53,7 @@ instance.interceptors.response.use(
     const { code, message } = response.data;
 
     if (code === 400 || code === 401 || code === 404) {
-      Message.error(message || "登录失败!");
+      Message.error(message || "请求失败!");
     }
 
     // 数据剥离，直接返回 ResponseData<T>
@@ -63,7 +63,7 @@ instance.interceptors.response.use(
     const { status } = error;
     if (status === 401) {
       Message.warning("当前登录状态有误，请重新登录");
-      // 情况状态并跳转回登录页
+      // 清空状态并跳转回登录页
       userService.logout();
       router.navigate("/login", {
         replace: true,

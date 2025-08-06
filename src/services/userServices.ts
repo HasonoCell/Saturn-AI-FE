@@ -1,6 +1,8 @@
 import { useUserStore } from "../stores";
 import { authAPI } from "../apis/user";
 import type { LoginParams, RegisterParams } from "../types/user";
+import { getErrorMessage, createEnhancedError } from "../utils/errorHandler";
+import { message as Message } from "antd";
 
 const resetError = () => {
   useUserStore.getState().setError(null);
@@ -13,22 +15,26 @@ export const userService = {
 
       const response = await authAPI.login(params);
 
-      if (response.code === 1) {
+      if (response.code === 200) {
         useUserStore.setState({
           isAuthenticated: true,
           token: response.data.token,
           error: null,
-          user: { nickname: response.data.nickname },
+          user: null,
         });
+        Message.success("登录成功!");
         return;
       }
 
       throw new Error(response.message || "账号或密码出错，登录失败");
     } catch (error) {
+      const errorMessage = getErrorMessage(error, "login");
+
       useUserStore.setState({
-        error: error instanceof Error ? error.message : "网络出错，登录失败",
+        error: errorMessage,
       });
-      throw error;
+
+      throw createEnhancedError(error, "login");
     }
   },
 
@@ -38,21 +44,26 @@ export const userService = {
 
       const response = await authAPI.register(params);
 
-      // ! 如果注册成功，自动登录
-      if (response.code === 1) {
-        await this.login({
-          username: params.username,
-          password: params.password,
+      if (response.code === 200) {
+        useUserStore.setState({
+          isAuthenticated: true,
+          token: response.data.token,
+          error: null,
+          user: null,
         });
+        Message.success("注册成功!");
         return;
       }
 
       throw new Error(response.message || "账号或密码出错，注册失败");
     } catch (error) {
+      const errorMessage = getErrorMessage(error, "register");
+
       useUserStore.setState({
-        error: error instanceof Error ? error.message : "网络出错，注册失败",
+        error: errorMessage,
       });
-      throw error;
+
+      throw createEnhancedError(error, "register");
     }
   },
 

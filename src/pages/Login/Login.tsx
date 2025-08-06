@@ -24,9 +24,9 @@ const Login = () => {
       await userService.login(params);
       // 登录成功后跳转回去
       navigate(from, { replace: true });
-    } catch {
-      // userService 里面有对 error 的处理
-      Message.error("登录失败，请检查账号或密码是否有误");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "登录失败，请稍后重试";
+      Message.error(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -20,8 +20,9 @@ const Register = () => {
     try {
       await userService.register(params);
       navigate("/login", { replace: true });
-    } catch {
-      Message.error("注册失败，请检查账号或密码是否有误");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "注册失败，请稍后重试";
+      Message.error(errorMessage);
     } finally {
       setLoading(false);
     }
