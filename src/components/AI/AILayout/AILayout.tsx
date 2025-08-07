@@ -32,7 +32,7 @@ const AILayout = () => {
         {!isCollapse && <ConversationSidebar />}
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 relative">
         <UserAvatar />
         <Outlet />
       </div>
