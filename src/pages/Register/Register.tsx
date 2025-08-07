@@ -21,7 +21,8 @@ const Register = () => {
       await userService.register(params);
       navigate("/login", { replace: true });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "注册失败，请稍后重试";
+      const errorMessage =
+        error instanceof Error ? error.message : "注册失败，请稍后重试";
       Message.error(errorMessage);
     } finally {
       setLoading(false);
