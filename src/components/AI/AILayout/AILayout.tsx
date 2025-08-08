@@ -11,7 +11,7 @@ const AILayout = () => {
       <div
         className={`${
           isCollapse ? "w-12" : "w-64"
-        } flex flex-col bg-gray-50 border-r border-gray-200 transition-all duration-300`}
+        } flex flex-col bg-gray-100 border-r-2 border-gray-200 transition-all duration-300`}
       >
         <div className="flex justify-between items-center p-2 border-b border-gray-200">
           {!isCollapse && <AILogo />}
