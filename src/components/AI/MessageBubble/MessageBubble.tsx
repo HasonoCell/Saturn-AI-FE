@@ -18,7 +18,7 @@ const markdownRender: MarkdownRender = (content) => {
 };
 
 const roles: BubbleListRoles = {
-  ai: {
+  system: {
     placement: "start",
     avatar: {
       icon: <DesktopOutlined />,

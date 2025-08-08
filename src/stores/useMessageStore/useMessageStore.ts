@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import type { MessageStoreProps } from "./types";
 
-export const useMessageStore = create<MessageStoreProps>(() => ({
+export const useMessageStore = create<MessageStoreProps>((set) => ({
   messages: [
     {
       role: "user",
       content: "你好！我想学习React开发，有什么好的建议吗？",
     },
     {
-      role: "ai",
+      role: "system",
       content: `你好！很高兴帮助你学习 React。
 
 **学习路线建议：**
@@ -38,7 +38,7 @@ export const useMessageStore = create<MessageStoreProps>(() => ({
       content: "我了解 ES6，做过一些小型 JS 项目。",
     },
     {
-      role: "ai",
+      role: "system",
       content: `很棒！基于你的基础，推荐以下 React 项目作为练手：
 
 ### 1. Todo 应用（首选）
@@ -61,7 +61,7 @@ export const useMessageStore = create<MessageStoreProps>(() => ({
       content: "我想先做 Todo 应用，能给个详细的实现建议吗？",
     },
     {
-      role: "ai",
+      role: "system",
       content: `当然可以！
 
 #### Todo 应用实现建议
@@ -88,7 +88,7 @@ export const useMessageStore = create<MessageStoreProps>(() => ({
       content: "如果我想做天气查询应用，有什么 API 推荐吗？",
     },
     {
-      role: "ai",
+      role: "system",
       content: `天气查询应用推荐使用以下免费 API：
 
 - [和风天气](https://dev.qweather.com/)（需注册，免费额度充足）
@@ -108,7 +108,7 @@ export const useMessageStore = create<MessageStoreProps>(() => ({
       content: "React 状态管理选 Redux 还是 Zustand？",
     },
     {
-      role: "ai",
+      role: "system",
       content: `两者各有优劣：
 
 - **Redux**：生态成熟，适合大型项目，工具链丰富（如 Redux Toolkit、DevTools），但配置略繁琐。
@@ -122,4 +122,10 @@ export const useMessageStore = create<MessageStoreProps>(() => ({
 `,
     },
   ],
+
+  addMessage(message) {
+    set((state) => ({
+      messages: [...state.messages, message],
+    }));
+  },
 }));
