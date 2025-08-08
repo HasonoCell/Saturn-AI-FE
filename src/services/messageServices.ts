@@ -11,7 +11,7 @@ export const messageService = {
       if (response.code === 200) {
         const aiMessage: MessageType = {
           role: "system",
-          content: response.data?.choices?.[0]?.message?.content || "无回复",
+          content: response.data.choices[0]?.message?.content || "无回复",
         };
 
         useMessageStore.getState().addMessage(aiMessage);
