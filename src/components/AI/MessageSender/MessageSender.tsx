@@ -1,51 +1,64 @@
 import { Sender } from "@ant-design/x";
 import { useState } from "react";
 import { messageService } from "../../../services";
-import { useMessageStore } from "../../../stores";
-import type { MessageType } from "../../../types";
+import { useMessageStore, useConversationStore } from "../../../stores";
+import { message as Message } from "antd";
 
 const MessageSender = () => {
   const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { messages, addMessage } = useMessageStore();
+  const { sending, addMessage, messages, setMessages } = useMessageStore();
+  const { currentConversation } = useConversationStore();
 
   const handleChange = (v: string) => {
     setValue(v);
   };
 
   const handleSubmit = async () => {
-    if (!value.trim()) return;
-    setLoading(true);
+    if (!value.trim()) {
+      Message.warning("请输入消息内容");
+      return;
+    }
+
+    const content = value;
+    const tempId = `temp-${Date.now()}`;
 
     try {
-      const userMessage: MessageType = {
-        role: "user",
-        content: value,
+      // 清空输入框
+      setValue("");
+
+      const userMessage = {
+        id: tempId,
+        content,
+        role: "user" as const,
+        conversationId: currentConversation!.id,
+        createdAt: new Date(),
       };
 
       addMessage(userMessage);
 
-      // 创建包含新用户消息的完整消息数组
-      const updatedMessages = [...messages, userMessage];
-      
-      // 清空输入框
-      setValue("");
-
-      await messageService.sendMessages(updatedMessages);
+      // 发送消息到后端
+      await messageService.sendMessage(currentConversation!.id, content);
     } catch {
-      throw new Error("操作失败！");
-    } finally {
-      setLoading(false);
+      // 发送失败时移除没有发送出去的消息
+      const filteredMessages = messages.filter((msg) => msg.id !== tempId);
+      setMessages(filteredMessages);
+
+      // 恢复输入框内容
+      setValue(content);
     }
   };
 
   return (
-    <Sender
-      loading={loading}
-      value={value}
-      onChange={(v) => handleChange(v)}
-      onSubmit={handleSubmit}
-    />
+    <div className="w-2/3">
+      <Sender
+        loading={sending}
+        value={value}
+        onChange={(v) => handleChange(v)}
+        onSubmit={handleSubmit}
+        placeholder={currentConversation ? "输入消息..." : "请先选择对话"}
+        disabled={!currentConversation}
+      />
+    </div>
   );
 };
 

@@ -41,7 +41,7 @@ instance.interceptors.request.use(
 
     const { token } = useUserStore.getState();
     config.headers = config.headers ?? {};
-    config.headers["Authorization"] = `${token}`;
+    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error: AxiosError) => Promise.reject(error)

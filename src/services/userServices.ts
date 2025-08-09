@@ -1,5 +1,6 @@
 import { useUserStore } from "../stores";
 import { authAPI } from "../apis/user";
+import { conversationService } from "./conversationServices";
 import type { LoginParams, RegisterParams } from "../types/user";
 import { getErrorMessage, createEnhancedError } from "../utils/errorHandler";
 import { message as Message } from "antd";
@@ -74,5 +75,7 @@ export const userService = {
       token: null,
       error: null,
     });
+    // 清空对话和消息数据
+    conversationService.clearAll();
   },
 };

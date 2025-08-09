@@ -1,34 +1,34 @@
-export type MessageRole = "user" | "system";
+/**
+ * OpenAI SDK 中
+ * user：表示用户输入，通常是人类提问或发起对话的内容。
+ * assistant：表示 AI 助手的回复内容。
+ * system：用于设定对话的系统指令或背景，比如“你是一个有礼貌的助手”。
+ * function：用于函数调用相关场景，表示 AI 触发了某个函数（如插件、工具调用），内容通常为函数调用的参数或结果。
+ */
 
-// 单条消息的数据类型，比如你向AI发送出一条消息"你好"
+export type MessageRole = "user" | "assistant" | "system" | "function";
+
+// 单条消息的数据类型
 export interface MessageType {
-  role: MessageRole;
+  id: string;
   content: string;
+  role: MessageRole;
+  conversationId: string;
+  createdAt: Date;
 }
 
 // 发送消息的请求体类型
-export interface SendMessagesRequest {
-  messages: MessageType[];
-}
-
-// OpenAI API 响应的消息格式
-export interface AIResponseMessage {
-  role: string;
+export interface SendMessageRequest {
   content: string;
 }
 
-// OpenAI API 响应的选择项格式
-export interface AIResponseChoice {
-  message: AIResponseMessage;
-  finish_reason?: string;
-  index: number;
+// 发送消息响应（后端会返回用户消息和AI回复两条消息）
+export interface SendMessageResponse {
+  userMessage: MessageType;
+  aiMessage: MessageType;
 }
 
-// OpenAI API 完整响应格式
-export interface AIResponse {
-  choices: AIResponseChoice[];
-  created: number;
-  id: string;
-  model: string;
-  object: string;
+// 获取消息列表响应
+export interface GetMessagesResponse {
+  messages: MessageType[];
 }

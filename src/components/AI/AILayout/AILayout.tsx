@@ -15,6 +15,7 @@ const AILayout = () => {
       >
         <div className="flex justify-between items-center p-2 border-b border-gray-200">
           {!isCollapse && <AILogo />}
+          {!isCollapse && <p className="font-bold">Saturn AI</p>}
           <div className="flex justify-center items-center">
             {isCollapse ? (
               <MenuUnfoldOutlined

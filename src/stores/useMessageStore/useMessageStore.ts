@@ -2,20 +2,22 @@ import { create } from "zustand";
 import type { MessageStoreProps } from "./types";
 
 export const useMessageStore = create<MessageStoreProps>((set) => ({
-  messages: [
-    {
-      role: "user",
-      content: "你好！你是谁?",
-    },
-    {
-      role: "system",
-      content: `你好！很高兴认识你，我是**通义千问**！`,
-    },
-  ],
+  messages: [],
+  sending: false,
 
-  addMessage(message) {
+  setMessages: (messages) => set({ messages }),
+
+  addMessage: (message) =>
     set((state) => ({
       messages: [...state.messages, message],
-    }));
-  },
+    })),
+
+  addMessages: (messages) =>
+    set((state) => ({
+      messages: [...state.messages, ...messages],
+    })),
+
+  setSending: (sending) => set({ sending }),
+
+  clearMessages: () => set({ messages: [] }),
 }));
