@@ -26,6 +26,7 @@ const MessageSender = () => {
       // 清空输入框
       setValue("");
 
+      // 构造 UserMessage
       const userMessage = {
         id: tempId,
         content,
@@ -34,10 +35,19 @@ const MessageSender = () => {
         createdAt: new Date(),
       };
 
+      // 添加 UserMessage 到 Store
       addMessage(userMessage);
 
-      // 发送消息到后端
-      await messageService.sendMessage(currentConversation!.id, content);
+      // 发送消息到后端并获得 AIMessage
+      const aiMessage = await messageService.sendMessage(
+        currentConversation!.id,
+        content
+      );
+
+      // 添加 AIMessage 到 Store
+      if (aiMessage) {
+        addMessage(aiMessage);
+      }
     } catch {
       // 发送失败时移除没有发送出去的消息
       const filteredMessages = messages.filter((msg) => msg.id !== tempId);

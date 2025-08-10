@@ -20,18 +20,3 @@ export interface CreateConversationRequest {
   title: string;
   description?: string;
 }
-
-// 创建对话的响应
-export interface CreateConversationResponse {
-  conversation: ConversationType;
-}
-
-// 获取对话列表的响应
-export interface GetAllConversationsResponse {
-  conversations: ConversationType[];
-}
-
-// 获取单个对话的响应
-export interface GetSingleConversationResponse {
-  conversation: ConversationWithMessages;
-}

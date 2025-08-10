@@ -17,8 +17,7 @@ import { conversationService } from "../../../services";
 import type { ConversationType } from "../../../types/conversation";
 
 const ConversationSidebar = () => {
-  const { convs: conversations, currentConv: currentConversation, loading } =
-    useConversationStore();
+  const { convs, currentConv, loading } = useConversationStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [convTitle, setConvTitle] = useState("");
 
@@ -46,7 +45,7 @@ const ConversationSidebar = () => {
   };
 
   const handleSelectConversation = async (conversation: ConversationType) => {
-    if (currentConversation?.id === conversation.id) return;
+    if (currentConv?.id === conversation.id) return;
     await conversationService.switchToConv(conversation.id);
   };
 
@@ -72,13 +71,13 @@ const ConversationSidebar = () => {
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
         <List
           loading={loading}
-          dataSource={conversations}
-          renderItem={(conversation) => (
+          dataSource={convs}
+          renderItem={(conv) => (
             <List.Item
               className={`cursor-pointer hover:bg-gray-100 px-4 py-2 ${
-                currentConversation?.id === conversation.id ? "bg-blue-50" : ""
+                currentConv?.id === conv.id ? "bg-blue-50" : ""
               }`}
-              onClick={() => handleSelectConversation(conversation)}
+              onClick={() => handleSelectConversation(conv)}
               actions={[
                 <Popconfirm
                   key="delete"
@@ -86,7 +85,7 @@ const ConversationSidebar = () => {
                   description="确定要删除这个对话吗？"
                   onConfirm={(e) => {
                     e?.stopPropagation();
-                    handleDeleteConversation(conversation.id);
+                    handleDeleteConversation(conv.id);
                   }}
                   okText="确定"
                   cancelText="取消"
@@ -103,10 +102,10 @@ const ConversationSidebar = () => {
             >
               <List.Item.Meta
                 avatar={<MessageOutlined />}
-                title={conversation.title}
+                title={conv.title}
                 description={
-                  conversation.description ||
-                  new Date(conversation.createdAt).toLocaleDateString()
+                  conv.description ||
+                  new Date(conv.createdAt).toLocaleDateString()
                 }
               />
             </List.Item>

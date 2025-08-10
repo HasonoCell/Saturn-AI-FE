@@ -22,13 +22,3 @@ export interface SendMessageRequest {
   conversationId: string;
   content: string;
 }
-
-// 发送消息响应（后端会返回用户消息和AI回复两条消息）
-export interface SendMessageResponse {
-  aiMessage: MessageType;
-}
-
-// 获取消息列表响应
-export interface GetMessagesResponse {
-  messages: MessageType[];
-}

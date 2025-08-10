@@ -14,12 +14,9 @@ export const messageService = {
       const response = await messageAPI.sendMessage(params);
 
       if (response.code === 200) {
-        const { aiMessage } = response.data;
+        const aiMessage = response.data;
 
-        // 添加AI回复
-        messageStore.addMessage(aiMessage);
-
-        return { aiMessage };
+        return aiMessage;
       } else {
         Message.error(response.message || "发送消息失败");
         return null;
@@ -40,7 +37,7 @@ export const messageService = {
       );
 
       if (response.code === 200) {
-        const { messages } = response.data;
+        const messages = response.data;
         useMessageStore.getState().setMessages(messages);
         return messages;
       } else {

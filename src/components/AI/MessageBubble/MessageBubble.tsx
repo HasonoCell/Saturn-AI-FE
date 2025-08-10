@@ -3,7 +3,12 @@ import { Typography, Empty } from "antd";
 import { useRef } from "react";
 import { DesktopOutlined, UserOutlined } from "@ant-design/icons";
 import { useMessageStore, useConversationStore } from "../../../stores";
-import type { BubbleListRef, BubbleListRoles, MarkdownRender } from "./types";
+import type {
+  BubbleListRef,
+  BubbleListRoles,
+  MarkdownRender,
+  BubbleItems,
+} from "./types";
 import markdown_it from "markdown-it";
 import "./index.css";
 
@@ -67,7 +72,7 @@ const MessageBubble = () => {
   }
 
   // 过滤掉不需要的属性，只保留Bubble.List需要的属性
-  const bubbleItems = messages.map(msg => ({
+  const bubbleItems: BubbleItems = messages.map((msg) => ({
     key: msg.id,
     content: msg.content,
     role: msg.role,

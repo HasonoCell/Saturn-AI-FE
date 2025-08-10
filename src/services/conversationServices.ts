@@ -12,7 +12,7 @@ export const conversationService = {
       const response = await conversationAPI.createConversation(params);
 
       if (response.code === 200) {
-        const { conversation } = response.data;
+        const conversation = response.data;
         useConversationStore.getState().addConv(conversation);
         Message.success("对话创建成功");
         return conversation;
@@ -35,7 +35,7 @@ export const conversationService = {
       const response = await conversationAPI.getAllConversations();
 
       if (response.code === 200) {
-        const { conversations } = response.data;
+        const conversations = response.data;
         useConversationStore.getState().setConvs(conversations);
         return conversations;
       } else {
@@ -50,7 +50,7 @@ export const conversationService = {
     }
   },
 
-  // 获取对话详情
+  // 获取对话详情（仅基本信息）
   async getSingleConvById(conversationId: string) {
     try {
       useConversationStore.getState().setLoading(true);
@@ -59,7 +59,7 @@ export const conversationService = {
       );
 
       if (response.code === 200) {
-        const { conversation } = response.data;
+        const conversation = response.data;
         useConversationStore.getState().setCurrentConv(conversation);
         return conversation;
       } else {
@@ -93,21 +93,17 @@ export const conversationService = {
     }
   },
 
-  // 切换到指定对话（统一的对话切换方法）
+  // 切换到指定对话
   async switchToConv(conversationId: string) {
     try {
       useConversationStore.getState().setLoading(true);
 
-      // 并行获取对话详情和消息
-      const [conversation, messages] = await Promise.all([
+      // 分别获取 Conversation 基本信息和 Messages
+      await Promise.all([
         this.getSingleConvById(conversationId),
+        // 获取 Messages 是通过 MessageService 暴露的 API 去操作的
         messageService.switchConversationMessages(conversationId),
       ]);
-
-      if (conversation) {
-        return { conversation, messages };
-      }
-      return null;
     } catch {
       Message.error("切换对话失败");
       return null;

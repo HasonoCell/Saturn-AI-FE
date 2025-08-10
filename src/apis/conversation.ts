@@ -1,17 +1,15 @@
 import { request, type ResponseData } from "../utils/request";
 import type {
+  ConversationType,
   CreateConversationRequest,
-  CreateConversationResponse,
-  GetAllConversationsResponse,
-  GetSingleConversationResponse,
 } from "../types/conversation";
 
 export const conversationAPI = {
   // 创建新对话
   createConversation: (
     params: CreateConversationRequest
-  ): Promise<ResponseData<CreateConversationResponse>> => {
-    return request<CreateConversationResponse, CreateConversationRequest>(
+  ): Promise<ResponseData<ConversationType>> => {
+    return request<ConversationType, CreateConversationRequest>(
       "conversations",
       "POST",
       params
@@ -19,17 +17,15 @@ export const conversationAPI = {
   },
 
   // 获取用户所有对话
-  getAllConversations: (): Promise<
-    ResponseData<GetAllConversationsResponse>
-  > => {
-    return request<GetAllConversationsResponse, null>("conversations", "GET");
+  getAllConversations: (): Promise<ResponseData<ConversationType[]>> => {
+    return request<ConversationType[], null>("conversations", "GET");
   },
 
-  // 获取单个对话详情（包含消息）
+  // 获取单个对话详情（仅基本信息，不包含消息）
   getConversationById: (
     conversationId: string
-  ): Promise<ResponseData<GetSingleConversationResponse>> => {
-    return request<GetSingleConversationResponse, null>(
+  ): Promise<ResponseData<ConversationType>> => {
+    return request<ConversationType, null>(
       `conversations/${conversationId}`,
       "GET"
     );

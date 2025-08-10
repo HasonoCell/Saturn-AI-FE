@@ -1,10 +1,10 @@
-import type { ConversationType, ConversationWithMessages } from "../../types/conversation";
+import type { ConversationType } from "../../types/conversation";
 
 export interface ConversationStoreProps {
   // 对话列表
   convs: ConversationType[];
-  // 当前选中的对话
-  currentConv: ConversationWithMessages | null;
+  // 当前选中的对话（仅基本信息）
+  currentConv: ConversationType | null;
   // 加载状态
   loading: boolean;
 
@@ -13,7 +13,7 @@ export interface ConversationStoreProps {
   // 添加新对话
   addConv: (conversation: ConversationType) => void;
   // 设置当前对话
-  setCurrentConv: (conversation: ConversationWithMessages | null) => void;
+  setCurrentConv: (conversation: ConversationType | null) => void;
   // 删除对话
   removeConv: (conversationId: string) => void;
   // 设置加载状态

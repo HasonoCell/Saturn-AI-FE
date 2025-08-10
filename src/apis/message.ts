@@ -1,16 +1,12 @@
 import { request, type ResponseData } from "../utils/request";
-import type {
-  SendMessageRequest,
-  SendMessageResponse,
-  GetMessagesResponse,
-} from "../types/message";
+import type { SendMessageRequest, MessageType } from "../types/message";
 
 export const messageAPI = {
   // 发送消息并获取AI回复
   sendMessage: (
     params: SendMessageRequest
-  ): Promise<ResponseData<SendMessageResponse>> => {
-    return request<SendMessageResponse, SendMessageRequest>(
+  ): Promise<ResponseData<MessageType>> => {
+    return request<MessageType, SendMessageRequest>(
       `conversations/${params.conversationId}/messages`,
       "POST",
       params
@@ -20,8 +16,8 @@ export const messageAPI = {
   // 获取对话中的所有消息
   getMessagesByConversationId: (
     conversationId: string
-  ): Promise<ResponseData<GetMessagesResponse>> => {
-    return request<GetMessagesResponse, undefined>(
+  ): Promise<ResponseData<MessageType[]>> => {
+    return request<MessageType[], undefined>(
       `conversations/${conversationId}/messages`,
       "GET"
     );
