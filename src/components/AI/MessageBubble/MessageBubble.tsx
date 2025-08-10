@@ -39,7 +39,7 @@ const roles: BubbleListRoles = {
 
 const MessageBubble = () => {
   const { messages } = useMessageStore();
-  const { currentConversation } = useConversationStore();
+  const { currentConv: currentConversation } = useConversationStore();
   const bubbleRef = useRef<BubbleListRef>(null);
 
   // 如果没有选择对话，显示提示

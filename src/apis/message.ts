@@ -8,11 +8,10 @@ import type {
 export const messageAPI = {
   // 发送消息并获取AI回复
   sendMessage: (
-    conversationId: string,
     params: SendMessageRequest
   ): Promise<ResponseData<SendMessageResponse>> => {
     return request<SendMessageResponse, SendMessageRequest>(
-      `conversations/${conversationId}/messages`,
+      `conversations/${params.conversationId}/messages`,
       "POST",
       params
     );

@@ -4,22 +4,22 @@ import type { SendMessageRequest } from "../types/message";
 import { message as Message } from "antd";
 
 export const messageService = {
-  // 发送消息并获取AI回复
+  // 发送消息,获取AI回复并将AI回复添加到 MessageStore
   async sendMessage(conversationId: string, content: string) {
     try {
       const messageStore = useMessageStore.getState();
       messageStore.setSending(true);
 
-      const params: SendMessageRequest = { content };
-      const response = await messageAPI.sendMessage(conversationId, params);
+      const params: SendMessageRequest = { content, conversationId };
+      const response = await messageAPI.sendMessage(params);
 
       if (response.code === 200) {
-        const { userMessage, aiMessage } = response.data;
+        const { aiMessage } = response.data;
 
-        // 添加用户消息和AI回复
-        messageStore.addMessages([userMessage, aiMessage]);
+        // 添加AI回复
+        messageStore.addMessage(aiMessage);
 
-        return { userMessage, aiMessage };
+        return { aiMessage };
       } else {
         Message.error(response.message || "发送消息失败");
         return null;

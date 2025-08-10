@@ -7,39 +7,37 @@ const ensureIsArray = (conversations: ConversationType[]) => {
 };
 
 export const useConversationStore = create<ConversationStoreProps>((set) => ({
-  conversations: [],
-  currentConversation: null,
+  convs: [],
+  currentConv: null,
   loading: false,
 
-  setConvs: (conversations) =>
+  setConvs: (convs) =>
     set({
-      conversations: ensureIsArray(conversations),
+      convs: ensureIsArray(convs),
     }),
 
-  addConv: (conversation) =>
+  addConv: (conv) =>
     set((state) => ({
-      conversations: [conversation, ...ensureIsArray(state.conversations)],
+      convs: [conv, ...ensureIsArray(state.convs)],
     })),
 
-  setCurrentConv: (currentConversation) => set({ currentConversation }),
+  setCurrentConv: (currentConv) => set({ currentConv }),
 
   removeConv: (conversationId) =>
     set((state) => ({
-      conversations: ensureIsArray(state.conversations).filter(
+      convs: ensureIsArray(state.convs).filter(
         (conv) => conv.id !== conversationId
       ),
-      currentConversation:
-        state.currentConversation?.id === conversationId
-          ? null
-          : state.currentConversation,
+      currentConv:
+        state.currentConv?.id === conversationId ? null : state.currentConv,
     })),
 
   setLoading: (loading) => set({ loading }),
 
   clearAll: () =>
     set({
-      conversations: [],
-      currentConversation: null,
+      convs: [],
+      currentConv: null,
       loading: false,
     }),
 }));

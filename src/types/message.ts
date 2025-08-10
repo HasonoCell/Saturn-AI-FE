@@ -19,12 +19,12 @@ export interface MessageType {
 
 // 发送消息的请求体类型
 export interface SendMessageRequest {
+  conversationId: string;
   content: string;
 }
 
 // 发送消息响应（后端会返回用户消息和AI回复两条消息）
 export interface SendMessageResponse {
-  userMessage: MessageType;
   aiMessage: MessageType;
 }
 

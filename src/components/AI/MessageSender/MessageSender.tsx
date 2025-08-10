@@ -7,7 +7,7 @@ import { message as Message } from "antd";
 const MessageSender = () => {
   const [value, setValue] = useState("");
   const { sending, addMessage, messages, setMessages } = useMessageStore();
-  const { currentConversation } = useConversationStore();
+  const { currentConv: currentConversation } = useConversationStore();
 
   const handleChange = (v: string) => {
     setValue(v);

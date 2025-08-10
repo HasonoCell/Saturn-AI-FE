@@ -17,7 +17,7 @@ import { conversationService } from "../../../services";
 import type { ConversationType } from "../../../types/conversation";
 
 const ConversationSidebar = () => {
-  const { conversations, currentConversation, loading } =
+  const { convs: conversations, currentConv: currentConversation, loading } =
     useConversationStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [convTitle, setConvTitle] = useState("");

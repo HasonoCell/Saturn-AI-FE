@@ -2,9 +2,9 @@ import type { ConversationType, ConversationWithMessages } from "../../types/con
 
 export interface ConversationStoreProps {
   // 对话列表
-  conversations: ConversationType[];
+  convs: ConversationType[];
   // 当前选中的对话
-  currentConversation: ConversationWithMessages | null;
+  currentConv: ConversationWithMessages | null;
   // 加载状态
   loading: boolean;
 
