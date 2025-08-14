@@ -30,7 +30,6 @@ const roles: BubbleListRoles = {
       style: { background: "#fde3cf" },
     },
     style: { maxWidth: 700 },
-    typing: { step: 5, interval: 20 },
     messageRender: markdownRender,
   },
   user: {

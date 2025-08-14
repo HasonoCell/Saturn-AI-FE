@@ -17,8 +17,8 @@ export interface MessageType {
   createdAt: Date;
 }
 
-// 发送消息的请求体类型
-export interface SendMessageRequest {
+// 发送用户消息的请求体类型
+export interface SendUserMessageRequest {
   conversationId: string;
   content: string;
 }

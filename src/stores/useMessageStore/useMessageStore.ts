@@ -12,9 +12,16 @@ export const useMessageStore = create<MessageStoreProps>((set) => ({
       messages: [...state.messages, message],
     })),
 
-  addMessages: (messages) =>
+  updateMessage: (id, updater) =>
     set((state) => ({
-      messages: [...state.messages, ...messages],
+      messages: state.messages.map((msg) =>
+        msg.id === id ? updater(msg) : msg
+      ),
+    })),
+
+  removeMessage: (id) =>
+    set((state) => ({
+      messages: state.messages.filter((msg) => msg.id !== id),
     })),
 
   setSending: (sending) => set({ sending }),

@@ -1,13 +1,15 @@
 import { Sender } from "@ant-design/x";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { messageService } from "../../../services";
 import { useMessageStore, useConversationStore } from "../../../stores";
 import { message as Message } from "antd";
 
 const MessageSender = () => {
   const [value, setValue] = useState("");
-  const { sending, addMessage, messages, setMessages } = useMessageStore();
-  const { currentConv: currentConversation } = useConversationStore();
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const { sending, addMessage, updateMessage, removeMessage, setSending } =
+    useMessageStore();
+  const { currentConv } = useConversationStore();
 
   const handleChange = (v: string) => {
     setValue(v);
@@ -19,43 +21,58 @@ const MessageSender = () => {
       return;
     }
 
-    const content = value;
-    const tempId = `temp-${Date.now()}`;
-
-    try {
-      // 清空输入框
-      setValue("");
-
-      // 构造 UserMessage
-      const userMessage = {
-        id: tempId,
-        content,
-        role: "user" as const,
-        conversationId: currentConversation!.id,
-        createdAt: new Date(),
-      };
-
-      // 添加 UserMessage 到 Store
-      addMessage(userMessage);
-
-      // 发送消息到后端并获得 AIMessage
-      const aiMessage = await messageService.sendMessage(
-        currentConversation!.id,
-        content
-      );
-
-      // 添加 AIMessage 到 Store
-      if (aiMessage) {
-        addMessage(aiMessage);
-      }
-    } catch {
-      // 发送失败时移除没有发送出去的消息
-      const filteredMessages = messages.filter((msg) => msg.id !== tempId);
-      setMessages(filteredMessages);
-
-      // 恢复输入框内容
-      setValue(content);
+    // 关闭之前的连接
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
     }
+
+    const content = value.trim();
+    setValue("");
+    setSending(true);
+
+    // 添加用户消息到UI
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      content,
+      role: "user" as const,
+      conversationId: currentConv!.id,
+      createdAt: new Date(),
+    };
+    addMessage(userMessage);
+
+    // 创建临时AI消息用于流式更新
+    const tempAIMessage = {
+      id: `ai-${Date.now()}`,
+      content: "",
+      role: "assistant" as const,
+      conversationId: currentConv!.id,
+      createdAt: new Date(),
+    };
+    addMessage(tempAIMessage);
+
+    // 开始流式处理
+    const eventSource = await messageService.createSSEWithUserMessage(
+      currentConv!.id,
+      content,
+      (chunk) => {
+        // 更新AI消息内容
+        updateMessage(tempAIMessage.id, (prev) => ({
+          ...prev,
+          content: prev.content + chunk,
+        }));
+      },
+      () => {
+        setSending(false);
+      },
+      (error) => {
+        // 错误处理
+        Message.error(error);
+        removeMessage(tempAIMessage.id);
+        setValue(content); // 恢复输入内容
+      }
+    );
+
+    eventSourceRef.current = eventSource;
   };
 
   return (
@@ -65,8 +82,8 @@ const MessageSender = () => {
         value={value}
         onChange={(v) => handleChange(v)}
         onSubmit={handleSubmit}
-        placeholder={currentConversation ? "输入消息..." : "请先选择对话"}
-        disabled={!currentConversation}
+        placeholder={currentConv ? "输入消息..." : "请先选择对话"}
+        disabled={!currentConv}
       />
     </div>
   );
