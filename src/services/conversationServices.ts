@@ -1,38 +1,16 @@
 import { conversationAPI } from "../apis/conversation";
 import { useConversationStore } from "../stores";
 import { messageService } from "./messageServices";
-import type { CreateConversationRequest } from "../types/conversation";
 import { message as Message } from "antd";
 
 export const conversationService = {
-  // 创建新对话
-  async createConv(params: CreateConversationRequest) {
-    try {
-      useConversationStore.getState().setLoading(true);
-      const response = await conversationAPI.createConversation(params);
-
-      if (response.code === 200) {
-        const conversation = response.data;
-        useConversationStore.getState().addConv(conversation);
-        Message.success("对话创建成功");
-        return conversation;
-      } else {
-        Message.error(response.message || "创建对话失败");
-        return null;
-      }
-    } catch {
-      Message.error("创建对话失败");
-      return null;
-    } finally {
-      useConversationStore.getState().setLoading(false);
-    }
-  },
-
-  // 获取所有对话
+  /**
+   * 获取所有对话
+   */
   async getAllConvs() {
     try {
       useConversationStore.getState().setLoading(true);
-      const response = await conversationAPI.getAllConversations();
+      const response = await conversationAPI.getAllConvs();
 
       if (response.code === 200) {
         const conversations = response.data;
@@ -50,13 +28,13 @@ export const conversationService = {
     }
   },
 
-  // 获取对话详情（仅基本信息）
-  async getSingleConvById(conversationId: string) {
+  /**
+   * 获取单个对话详情（仅基本信息，不包含消息）
+   */
+  async getSingleConv(conversationId: string) {
     try {
       useConversationStore.getState().setLoading(true);
-      const response = await conversationAPI.getConversationById(
-        conversationId
-      );
+      const response = await conversationAPI.getSingleConv(conversationId);
 
       if (response.code === 200) {
         const conversation = response.data;
@@ -74,10 +52,12 @@ export const conversationService = {
     }
   },
 
-  // 删除对话
+  /**
+   * 删除对话
+   */
   async deleteConv(conversationId: string) {
     try {
-      const response = await conversationAPI.deleteConversation(conversationId);
+      const response = await conversationAPI.deleteConv(conversationId);
 
       if (response.code === 200) {
         useConversationStore.getState().removeConv(conversationId);
@@ -93,16 +73,19 @@ export const conversationService = {
     }
   },
 
-  // 切换到指定对话
+  /**
+   * 切换到指定对话
+   */
   async switchToConv(conversationId: string) {
     try {
       useConversationStore.getState().setLoading(true);
 
       // 分别获取 Conversation 基本信息和 Messages
       await Promise.all([
-        this.getSingleConvById(conversationId),
+        // 这里只获取对话的基本信息，不包含对应的消息
+        this.getSingleConv(conversationId),
         // 获取 Messages 是通过 MessageService 暴露的 API 去操作的
-        messageService.switchConversationMessages(conversationId),
+        messageService.switchConvMessages(conversationId),
       ]);
     } catch {
       Message.error("切换对话失败");

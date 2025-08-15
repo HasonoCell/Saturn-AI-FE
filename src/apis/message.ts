@@ -1,9 +1,16 @@
 import { request, type ResponseData } from "../utils/request";
-import type { SendUserMessageRequest, MessageType } from "../types/message";
+import type {
+  SendUserMessageRequest,
+  MessageType,
+  FirstMessageRequest,
+  FirstMessageResponse,
+} from "../types/message";
 import { useUserStore } from "../stores";
 
 export const messageAPI = {
-  // 只起发送用户消息作用
+  /**
+   * 发送用户消息
+   */
   sendUserMessage: (
     params: SendUserMessageRequest
   ): Promise<ResponseData<null>> => {
@@ -14,7 +21,9 @@ export const messageAPI = {
     );
   },
 
-  // 创建SSE连接，流式获取AI回复
+  /**
+   * 创建SSE连接，流式获取AI回复
+   */
   createSSE: (conversationId: string): EventSource => {
     // 获取 token 和 url
     const { token } = useUserStore.getState();
@@ -32,12 +41,25 @@ export const messageAPI = {
   },
 
   // 获取对话中的所有消息
-  getMessagesByConversationId: (
+  getMessages: (
     conversationId: string
   ): Promise<ResponseData<MessageType[]>> => {
     return request<MessageType[], undefined>(
       `conversations/${conversationId}/messages`,
       "GET"
+    );
+  },
+
+  /**
+   * 自动创建对话并发送第一条消息（组合API）
+   */
+  autoCreateAndSendFirstMessage: (
+    params: FirstMessageRequest
+  ): Promise<ResponseData<FirstMessageResponse>> => {
+    return request<FirstMessageResponse, FirstMessageRequest>(
+      "conversations/auto-create-and-send",
+      "POST",
+      params
     );
   },
 };

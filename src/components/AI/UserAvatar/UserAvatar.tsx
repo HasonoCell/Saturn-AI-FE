@@ -1,6 +1,6 @@
 import {
   UserOutlined,
-  QqOutlined,
+  AndroidOutlined,
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
@@ -52,8 +52,9 @@ const UserAvatar = () => {
       <Dropdown menu={{ items: menuItems }} arrow>
         <Avatar
           src={user?.avatar}
-          icon={!user?.avatar ? <QqOutlined /> : null}
-          className="bg-orange-300 text-orange-700"
+          icon={!user?.avatar ? <AndroidOutlined /> : null}
+          className="bg-white text-black"
+          size="large"
         />
       </Dropdown>
 

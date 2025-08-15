@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import App from "../App";
-import { Home, Login, Register } from "../pages";
+import { Home, Conversation, Login, Register } from "../pages";
 import {
   AILayout,
   AuthTransition,
@@ -49,6 +49,10 @@ const router = createBrowserRouter([
           {
             path: "home",
             Component: Home,
+          },
+          {
+            path: "conversation/:id",
+            Component: Conversation,
           },
         ],
       },

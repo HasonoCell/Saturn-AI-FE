@@ -10,6 +10,9 @@ const resetError = () => {
 };
 
 export const userService = {
+  /**
+   * 登录
+   */
   async login(params: LoginParams) {
     try {
       resetError();
@@ -39,6 +42,9 @@ export const userService = {
     }
   },
 
+  /**
+   * 注册
+   */
   async register(params: RegisterParams) {
     try {
       resetError();
@@ -68,6 +74,9 @@ export const userService = {
     }
   },
 
+  /**
+   * 退出登录
+   */
   logout() {
     useUserStore.setState({
       isAuthenticated: false,

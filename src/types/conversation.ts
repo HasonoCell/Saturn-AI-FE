@@ -7,9 +7,3 @@ export interface ConversationType {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// 创建对话的请求参数
-export interface CreateConversationRequest {
-  title: string;
-  description?: string;
-}

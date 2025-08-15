@@ -22,3 +22,15 @@ export interface SendUserMessageRequest {
   conversationId: string;
   content: string;
 }
+
+// 自动创建对话并发送第一条消息的请求体类型
+export interface FirstMessageRequest {
+  content: string;
+}
+
+// 自动创建对话并发送第一条消息的返回类型
+export interface FirstMessageResponse {
+  conversationId: string;
+  title: string;
+  aiResponse: string;
+}

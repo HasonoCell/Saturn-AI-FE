@@ -1,52 +1,33 @@
-import { useState, useEffect } from "react";
-import {
-  List,
-  Button,
-  Modal,
-  Input,
-  message as Message,
-  Popconfirm,
-} from "antd";
+import { useEffect } from "react";
+import { List, Button, Popconfirm } from "antd";
 import {
   PlusOutlined,
   MessageOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router";
 import { useConversationStore } from "../../../stores";
-import { conversationService } from "../../../services";
+import { conversationService, messageService } from "../../../services";
 import type { ConversationType } from "../../../types/conversation";
 
 const ConversationSidebar = () => {
   const { convs, currentConv, loading } = useConversationStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [convTitle, setConvTitle] = useState("");
+  const navigate = useNavigate();
 
   // 组件挂载时加载对话列表
   useEffect(() => {
     conversationService.getAllConvs();
   }, []);
 
-  const handleCreateConversation = async () => {
-    if (!convTitle.trim()) {
-      Message.warning("请输入对话标题");
-      return;
-    }
-
-    const conversation = await conversationService.createConv({
-      title: convTitle.trim(),
-    });
-
-    if (conversation) {
-      setIsModalOpen(false);
-      setConvTitle("");
-      // 自动切换到新创建的对话
-      await conversationService.switchToConv(conversation.id);
-    }
+  const handleNewConv = () => {
+    // 清除当前消息状态
+    messageService.clearMessages();
+    navigate("/home");
   };
 
-  const handleSelectConversation = async (conversation: ConversationType) => {
-    if (currentConv?.id === conversation.id) return;
-    await conversationService.switchToConv(conversation.id);
+  const handleSelectConv = async (conv: ConversationType) => {
+    if (currentConv?.id === conv.id) return;
+    navigate(`/conversation/${conv.id}`);
   };
 
   const handleDeleteConversation = async (conversationId: string) => {
@@ -60,10 +41,10 @@ const ConversationSidebar = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleNewConv}
           className="w-full"
         >
-          新建对话
+          <span>新建对话</span>
         </Button>
       </div>
 
@@ -77,7 +58,7 @@ const ConversationSidebar = () => {
               className={`cursor-pointer hover:bg-gray-100 px-4 py-2 ${
                 currentConv?.id === conv.id ? "bg-blue-50" : ""
               }`}
-              onClick={() => handleSelectConversation(conv)}
+              onClick={() => handleSelectConv(conv)}
               actions={[
                 <Popconfirm
                   key="delete"
@@ -112,27 +93,6 @@ const ConversationSidebar = () => {
           )}
         />
       </div>
-
-      {/* 创建对话模态框 */}
-      <Modal
-        title="创建新对话"
-        open={isModalOpen}
-        onOk={handleCreateConversation}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setConvTitle("");
-        }}
-        okText="创建"
-        cancelText="取消"
-      >
-        <Input
-          placeholder="请输入对话标题"
-          value={convTitle}
-          onChange={(e) => setConvTitle(e.target.value)}
-          onPressEnter={handleCreateConversation}
-          maxLength={50}
-        />
-      </Modal>
     </div>
   );
 };
