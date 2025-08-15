@@ -30,8 +30,14 @@ const ConversationSidebar = () => {
     navigate(`/conversation/${conv.id}`);
   };
 
-  const handleDeleteConversation = async (conversationId: string) => {
-    await conversationService.deleteConv(conversationId);
+  const handleDeleteConv = async (conversationId: string) => {
+    const success = await conversationService.deleteConv(conversationId);
+
+    // 如果删除成功且删除的是当前对话
+    if (success && currentConv?.id === conversationId) {
+      messageService.clearMessages();
+      navigate("/home");
+    }
   };
 
   return (
@@ -66,7 +72,7 @@ const ConversationSidebar = () => {
                   description="确定要删除这个对话吗？"
                   onConfirm={(e) => {
                     e?.stopPropagation();
-                    handleDeleteConversation(conv.id);
+                    handleDeleteConv(conv.id);
                   }}
                   okText="确定"
                   cancelText="取消"
