@@ -14,9 +14,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  // 获取到之前尝试访问的路径
   const location = useLocation();
-  const from = location.state?.from || "/";
+
+  const from = location.state?.from || "/home";
 
   const handleSubmit = async (params: LoginParams) => {
     setLoading(true);
@@ -25,7 +25,8 @@ const Login = () => {
       // 登录成功后跳转回去
       navigate(from, { replace: true });
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "登录失败，请稍后重试";
+      const errorMessage =
+        error instanceof Error ? error.message : "登录失败，请稍后重试";
       Message.error(errorMessage);
     } finally {
       setLoading(false);

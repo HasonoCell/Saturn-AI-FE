@@ -1,5 +1,6 @@
 import { useUserStore } from "../stores";
 import { authAPI } from "../apis/user";
+import { conversationService } from "./conversationServices";
 import type { LoginParams, RegisterParams } from "../types/user";
 import { getErrorMessage, createEnhancedError } from "../utils/errorHandler";
 import { message as Message } from "antd";
@@ -9,6 +10,9 @@ const resetError = () => {
 };
 
 export const userService = {
+  /**
+   * 登录
+   */
   async login(params: LoginParams) {
     try {
       resetError();
@@ -38,6 +42,9 @@ export const userService = {
     }
   },
 
+  /**
+   * 注册
+   */
   async register(params: RegisterParams) {
     try {
       resetError();
@@ -67,6 +74,9 @@ export const userService = {
     }
   },
 
+  /**
+   * 退出登录
+   */
   logout() {
     useUserStore.setState({
       isAuthenticated: false,
@@ -74,5 +84,7 @@ export const userService = {
       token: null,
       error: null,
     });
+    // 清空对话和消息数据
+    conversationService.clearAll();
   },
 };

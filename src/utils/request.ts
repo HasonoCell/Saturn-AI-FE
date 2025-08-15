@@ -30,7 +30,7 @@ export interface ResponseData<T> {
 const whiteList = ["/user/login", "/user/register"];
 
 const instance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 30000,
 });
 
@@ -41,7 +41,7 @@ instance.interceptors.request.use(
 
     const { token } = useUserStore.getState();
     config.headers = config.headers ?? {};
-    config.headers["Authorization"] = `${token}`;
+    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error: AxiosError) => Promise.reject(error)

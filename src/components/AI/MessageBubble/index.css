@@ -1,0 +1,13 @@
+.message-bubble-list {
+  /* 隐藏滚动条但保留滚动功能 */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox, Chrome 新版 */
+  padding-bottom: 20%;
+  height: 100%;
+  width: 50vw;
+  overflow-y: auto;
+}
+
+.message-bubble-list::-webkit-scrollbar {
+  display: none; /* 兼容老版 Chrome/Safari */
+}
