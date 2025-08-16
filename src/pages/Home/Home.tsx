@@ -13,7 +13,7 @@ const Home = () => {
   }, [setCurrentConv]);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-10">
+    <div className="h-full flex flex-col items-center justify-center px-10 select-none">
       {/* 欢迎区域 */}
       <div className="flex flex-col items-center mb-12">
         <div className="flex items-center">
