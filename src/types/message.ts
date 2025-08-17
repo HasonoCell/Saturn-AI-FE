@@ -37,3 +37,7 @@ export interface FirstMessageResponse {
   conversationId: string;
   title: string;
 }
+
+export interface SearchMessageItem extends MessageType {
+  conversationTitle: string;
+}

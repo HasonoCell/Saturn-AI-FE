@@ -152,4 +152,19 @@ export const messageService = {
   clearMessages() {
     useMessageStore.getState().clearMessages();
   },
+
+  /**
+   * 搜索对话
+   */
+  async searchMessage(query: string) {
+    try {
+      const response = await messageAPI.searchMessage(query);
+
+      if (response.code && response.data) {
+        return response.data;
+      }
+    } catch {
+      return [];
+    }
+  },
 };

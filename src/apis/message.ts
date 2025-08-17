@@ -4,6 +4,7 @@ import type {
   MessageType,
   FirstMessageRequest,
   FirstMessageResponse,
+  SearchMessageItem,
 } from "../types/message";
 import { useUserStore } from "../stores";
 
@@ -60,6 +61,16 @@ export const messageAPI = {
   ): Promise<ResponseData<MessageType[]>> => {
     return request<MessageType[], undefined>(
       `conversations/${conversationId}/messages`,
+      "GET"
+    );
+  },
+
+  // 通过文本搜索对应的信息
+  searchMessage: (
+    query: string
+  ): Promise<ResponseData<SearchMessageItem[]>> => {
+    return request<SearchMessageItem[], null>(
+      `messages/search?query=${encodeURIComponent(query)}`,
       "GET"
     );
   },

@@ -1,16 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { List, Button, Popconfirm } from "antd";
 import {
   PlusOutlined,
   MessageOutlined,
   DeleteOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { useConversationStore } from "../../../stores";
 import { conversationService, messageService } from "../../../services";
 import type { ConversationType } from "../../../types/conversation";
+import MessageSearcher from "../MessageSearcher/MessageSearcher";
 
 const ConversationSidebar = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const { convs, currentConv, loading } = useConversationStore();
   const navigate = useNavigate();
 
@@ -40,10 +44,18 @@ const ConversationSidebar = () => {
     }
   };
 
+  const handleSearchMessages = async () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseSearch = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div className="h-full flex flex-col max-h-screen overflow-hidden">
       {/* 创建新对话按钮 */}
-      <div className="p-4 border-b flex-shrink-0">
+      <div className="p-4 flex-shrink-0">
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -53,6 +65,21 @@ const ConversationSidebar = () => {
           <span>新建对话</span>
         </Button>
       </div>
+
+      {/* 搜索对话按钮 */}
+      <div className="p-4 border-b flex-shrink-0">
+        <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          onClick={handleSearchMessages}
+          className="w-full"
+        >
+          <span>搜索对话</span>
+        </Button>
+      </div>
+
+      {/* 搜索对话组件 */}
+      <MessageSearcher isOpen={isOpen} onClose={handleCloseSearch} />
 
       {/* 对话列表 */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
