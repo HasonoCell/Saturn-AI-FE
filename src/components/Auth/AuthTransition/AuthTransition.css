@@ -1,0 +1,29 @@
+.auth-transition-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-transition-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.auth-slide-enter {
+  transform: translateX(100%);
+}
+
+.auth-slide-enter-active {
+  transform: translateX(0);
+  transition: transform 250ms ease-out;
+}
+
+.auth-slide-exit {
+  transform: translateX(0);
+}
+
+.auth-slide-exit-active {
+  transform: translateX(-100%);
+  transition: transform 250ms ease-in;
+}
