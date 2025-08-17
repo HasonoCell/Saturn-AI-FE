@@ -4,15 +4,19 @@ import type {
   SendUserMessageRequest,
   FirstMessageRequest,
   FirstMessageResponse,
+  SendUserMessageResponse,
 } from "../types/message";
 import type { ResponseData } from "../utils/request";
 import { message as Message } from "antd";
 
 export const messageService = {
   /**
-   * 建立SSE连接前先发送用户消息
+   * 已存在对话的情况下发送用户消息
    */
-  async sendUserMessage(conversationId: string, content: string) {
+  async sendUserMessage(
+    conversationId: string,
+    content: string
+  ): Promise<SendUserMessageResponse | null> {
     try {
       const params: SendUserMessageRequest = {
         conversationId,
@@ -21,38 +25,48 @@ export const messageService = {
       const response = await messageAPI.sendUserMessage(params);
 
       if (response.code === 200) {
-        return { success: true, message: "发送消息成功" };
+        return { success: true };
       } else {
-        Message.error(response.message || "发送消息失败");
-        return { success: false, message: response.message || "发送消息失败" };
+        return { success: false };
       }
-    } catch (error) {
-      console.error("Frontend - Error sending user message:", error);
-      Message.error("网络错误，发送消息失败");
-      return { success: false, message: "网络错误" };
+    } catch {
+      return null;
     }
   },
 
   /**
-   *
-   * 建立SSE连接前先发送用户消息
+   * 自动创建对话并发送第一条消息
    */
-  async createSSEWithUserMessage(
+  async autoCreateAndSendFirstMessage(
+    content: string
+  ): Promise<FirstMessageResponse | null> {
+    try {
+      const params: FirstMessageRequest = {
+        content,
+      };
+
+      const response = await messageAPI.autoCreateAndSendFirstMessage(params);
+
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        return null;
+      }
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * 建立SSE连接获取AI流式回复
+   */
+  async createSSE(
     conversationId: string,
-    content: string,
     onChunk: (chunk: string) => void,
     onComplete: () => void,
     onError: (error: string) => void
   ): Promise<EventSource | null> {
     try {
-      // 1. 发送用户消息
-      const result = await this.sendUserMessage(conversationId, content);
-      if (!result.success) {
-        onError(result.message);
-        return null;
-      }
-
-      // 2. 建立SSE连接
       const eventSource = messageAPI.createSSE(conversationId);
 
       eventSource.onmessage = (event: MessageEvent) => {
@@ -71,11 +85,16 @@ export const messageService = {
         }
       };
 
+      // 添加错误处理
+      eventSource.onerror = (error) => {
+        console.error("SSE连接错误:", error);
+        onError("连接错误");
+        eventSource.close();
+      };
+
       return eventSource;
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "发送消息失败";
-      onError(errorMessage);
+    } catch {
+      onError("创建连接失败");
       useMessageStore.getState().setSending(false);
       return null;
     }
@@ -107,11 +126,21 @@ export const messageService = {
    */
   async switchConvMessages(conversationId: string) {
     try {
-      // 先清空当前消息
-      this.clearMessages();
-      // 加载新对话的消息
-      const messages = await this.getMessages(conversationId);
-      return messages;
+      // 检查当前消息是否已经属于目标对话
+      const currentMessages = useMessageStore.getState().messages;
+      const isCurrentConv =
+        currentMessages.length > 0 &&
+        currentMessages[0].conversationId === conversationId;
+
+      // 如果不是当前对话的消息，才清空并重新加载
+      if (!isCurrentConv) {
+        this.clearMessages();
+        const messages = await this.getMessages(conversationId);
+        return messages;
+      }
+
+      // 如果已经是当前对话的消息，直接返回
+      return currentMessages;
     } catch {
       return [];
     }
@@ -122,31 +151,5 @@ export const messageService = {
    */
   clearMessages() {
     useMessageStore.getState().clearMessages();
-  },
-
-  /**
-   * 自动创建对话并发送第一条消息
-   */
-  async autoCreateAndSendFirstMessage(
-    content: string
-  ): Promise<FirstMessageResponse | null> {
-    try {
-      const params: FirstMessageRequest = {
-        content: content.trim(),
-      };
-
-      const response = await messageAPI.autoCreateAndSendFirstMessage(params);
-
-      if (response.code === 200) {
-        Message.success("创建对话成功");
-        return response.data;
-      } else {
-        Message.error(response.message || "创建对话失败");
-        return null;
-      }
-    } catch {
-      Message.error("网络错误，创建对话失败");
-      return null;
-    }
   },
 };

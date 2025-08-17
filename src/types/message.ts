@@ -23,6 +23,10 @@ export interface SendUserMessageRequest {
   content: string;
 }
 
+export interface SendUserMessageResponse {
+  success: boolean;
+}
+
 // 自动创建对话并发送第一条消息的请求体类型
 export interface FirstMessageRequest {
   content: string;
@@ -32,5 +36,4 @@ export interface FirstMessageRequest {
 export interface FirstMessageResponse {
   conversationId: string;
   title: string;
-  aiResponse: string;
 }

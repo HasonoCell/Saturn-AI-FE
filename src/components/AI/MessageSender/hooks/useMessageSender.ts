@@ -94,6 +94,105 @@ export const useMessageSender = ({
     return newCov;
   };
 
+  // 清理和准备发送消息
+  const prepareMessageSending = (userContent: string) => {
+    // 关闭之前的连接
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
+    setValue("");
+    setSending(true);
+    return userContent;
+  };
+
+  // 创建SSE
+  const createSSEConnection = async (
+    conversationId: string,
+    aiMessageId: string,
+    userContent: string
+  ) => {
+    const eventSource = await messageService.createSSE(
+      conversationId,
+      (chunk) => {
+        // 更新AI消息内容
+        updateMessage(aiMessageId, (prev) => ({
+          ...prev,
+          content: prev.content + chunk,
+        }));
+      },
+      () => {
+        setSending(false);
+      },
+      (error) => {
+        // 错误处理
+        Message.error(error);
+        removeMessage(aiMessageId);
+        setValue(userContent);
+        setSending(false);
+      }
+    );
+
+    if (eventSource) {
+      eventSourceRef.current = eventSource;
+    }
+  };
+
+  // 处理新对话
+  const handleNewConversation = async (userContent: string) => {
+    // 发送用户消息并创建对话
+    const result = await messageService.autoCreateAndSendFirstMessage(
+      userContent
+    );
+
+    if (!result) {
+      throw new Error("创建对话失败");
+    }
+
+    const { conversationId, title } = result;
+
+    // 添加到对话列表并设置为当前对话
+    const newConv = createConv(conversationId, title);
+    addConv(newConv);
+    setCurrentConv(newConv);
+
+    // 添加用户消息和AI回复到UI
+    const userMessage = createMessage(conversationId, userContent);
+    const aiMessage = createMessage(conversationId, "", false);
+    addMessage(userMessage);
+    addMessage(aiMessage);
+
+    // 跳转到对话页面
+    navigate(`/conversation/${conversationId}`);
+
+    // 开始流式处理
+    await createSSEConnection(conversationId, aiMessage.id, userContent);
+  };
+
+  // 处理已有对话流程
+  const handleExistingConversation = async (userContent: string) => {
+    if (!currentConv) {
+      throw new Error("请先选择对话");
+    }
+
+    const result = await messageService.sendUserMessage(
+      currentConv.id,
+      userContent
+    );
+
+    if (!result?.success) {
+      throw new Error("发送消息失败");
+    }
+
+    // 添加用户消息和AI回复到UI
+    const userMessage = createMessage(currentConv.id, userContent);
+    const aiMessage = createMessage(currentConv.id, "", false);
+    addMessage(userMessage);
+    addMessage(aiMessage);
+
+    // 开始流式处理
+    await createSSEConnection(currentConv.id, aiMessage.id, userContent);
+  };
+
   // 处理消息提交
   const handleMessageSubmit = async () => {
     if (!value.trim()) {
@@ -101,88 +200,20 @@ export const useMessageSender = ({
       return;
     }
 
-    // 关闭之前的连接
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
-
-    const userContent = value.trim();
-    setValue("");
-    setSending(true);
+    const userContent = prepareMessageSending(value.trim());
 
     try {
       if (isNewConv) {
-        // 新对话模式
-        const result = await messageService.autoCreateAndSendFirstMessage(
-          userContent
-        );
-
-        if (result) {
-          const { conversationId, title, aiResponse } = result;
-
-          // 添加到对话列表并设置为当前对话
-          const newConv = createConv(conversationId, title);
-          addConv(newConv);
-          setCurrentConv(newConv);
-
-          // 添加用户消息到UI
-          const userMessage = createMessage(conversationId, userContent);
-          addMessage(userMessage);
-
-          // 添加AI回复到UI
-          const aiMessage = createMessage(conversationId, aiResponse, false);
-          addMessage(aiMessage);
-
-          // 跳转到对话页面
-          navigate(`/conversation/${result.conversationId}`);
-        }
+        await handleNewConversation(userContent);
       } else {
-        // 已有对话模式
-        if (!currentConv) {
-          Message.error("请先选择对话");
-          return;
-        }
-
-        // 添加用户消息到UI
-        const userMessage = createMessage(currentConv.id, userContent);
-        addMessage(userMessage);
-
-        // 添加AI回复到UI
-        const aiMessage = createMessage(currentConv.id, "", false);
-        addMessage(aiMessage);
-
-        // 开始流式处理
-        const eventSource = await messageService.createSSEWithUserMessage(
-          currentConv.id,
-          userContent,
-          (chunk) => {
-            // 更新AI消息内容
-            updateMessage(aiMessage.id, (prev) => ({
-              ...prev,
-              content: prev.content + chunk,
-            }));
-          },
-          () => {
-            setSending(false);
-          },
-          (error) => {
-            // 错误处理
-            Message.error(error);
-            removeMessage(aiMessage.id);
-            setValue(userContent);
-            setSending(false);
-          }
-        );
-
-        eventSourceRef.current = eventSource;
+        await handleExistingConversation(userContent);
       }
-    } catch {
-      Message.error("发送消息失败");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "发送消息失败";
+      Message.error(errorMessage);
       setValue(userContent);
-    } finally {
-      if (isNewConv) {
-        setSending(false);
-      }
+      setSending(false);
     }
   };
 

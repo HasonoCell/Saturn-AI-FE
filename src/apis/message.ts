@@ -22,6 +22,20 @@ export const messageAPI = {
   },
 
   /**
+   * 自动创建对话并发送第一条消息（组合API）
+   */
+  // 这里不复用上面的 sendUserMessage 是因为还拿不到 conversationId
+  autoCreateAndSendFirstMessage: (
+    params: FirstMessageRequest
+  ): Promise<ResponseData<FirstMessageResponse>> => {
+    return request<FirstMessageResponse, FirstMessageRequest>(
+      "conversations/auto-create-and-send",
+      "POST",
+      params
+    );
+  },
+
+  /**
    * 创建SSE连接，流式获取AI回复
    */
   createSSE: (conversationId: string): EventSource => {
@@ -47,19 +61,6 @@ export const messageAPI = {
     return request<MessageType[], undefined>(
       `conversations/${conversationId}/messages`,
       "GET"
-    );
-  },
-
-  /**
-   * 自动创建对话并发送第一条消息（组合API）
-   */
-  autoCreateAndSendFirstMessage: (
-    params: FirstMessageRequest
-  ): Promise<ResponseData<FirstMessageResponse>> => {
-    return request<FirstMessageResponse, FirstMessageRequest>(
-      "conversations/auto-create-and-send",
-      "POST",
-      params
     );
   },
 };
