@@ -132,7 +132,7 @@ export const validateFileSize = (file: File, maxSize: number): boolean => {
  * 上传单个切片 (支持断点续传)
  * @param uploadId 上传ID
  * @param chunk 切片数据
- * @param skipUploaded 是否跳过已上传的切片
+ * @param isUploaded 是否跳过已上传的切片
  * @param updateUploadedChunks 更新已上传切片列表的回调函数
  * @returns Promise<UploadChunkResponse>
  */
@@ -140,10 +140,10 @@ export const uploadSingleChunk = async (
   uploadId: string,
   chunk: ChunkType,
   updateUploadedChunks?: (chunkIndex: number) => void,
-  skipUploaded?: boolean
+  isUploaded?: boolean
 ): Promise<UploadChunkResponse> => {
   // 如果标记为跳过且已上传，直接返回成功
-  if (skipUploaded) {
+  if (isUploaded) {
     if (updateUploadedChunks) {
       updateUploadedChunks(chunk.index);
     }
@@ -207,11 +207,8 @@ export const concurrentPool = async (
       try {
         result[taskId] = await tasks[taskId]();
 
-        // 检查上传是否成功
         if (result[taskId].success) {
           return;
-        } else {
-          throw new Error(result[taskId].message || "上传失败");
         }
       } catch (error) {
         attempt++;

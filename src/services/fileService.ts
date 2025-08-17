@@ -5,7 +5,6 @@ import type {
   InitUploadResponse,
   MergeChunksParams,
   MergeChunksResponse,
-  UploadProgressResponse,
 } from "../types";
 
 export const fileService = {
@@ -27,16 +26,6 @@ export const fileService = {
     return response.code === 200
       ? { success: true }
       : { success: false, message: response.message || "上传失败" };
-  },
-
-  /**
-   * 获取上传进度
-   */
-  async getUploadProgress(
-    uploadId: string
-  ): Promise<UploadProgressResponse | null> {
-    const response = await fileAPI.getUploadProgress(uploadId);
-    return response.code === 200 && response.data ? response.data : null;
   },
 
   /**

@@ -16,19 +16,10 @@ export interface UploadChunkResponse {
   message?: string;
 }
 
-export interface UploadProgressResponse {
-  uploaded: number;
-  total: number;
-  percent: number;
-}
-
 export interface MergeChunksParams {
   uploadId: string;
 }
 
 export interface MergeChunksResponse {
   success: boolean;
-  fileId?: string;
-  filePath?: string;
-  fileUrl?: string;
 }

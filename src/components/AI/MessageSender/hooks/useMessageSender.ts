@@ -247,8 +247,10 @@ export const useMessageSender = ({
         uploadEvent.uploadId,
         chunks,
         uploadedChunks,
+        // 前端手动更新，维护本地 uploadedChunks 状态
         (chunkIndex: number) => {
           if (currentUploadEventRef.current) {
+            // 使用 Set 自动去重，保证并发环境下 chunkIndex 不会重复
             const uploadedSet = new Set(
               currentUploadEventRef.current.uploadedChunks
             );
