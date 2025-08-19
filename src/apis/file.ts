@@ -4,7 +4,6 @@ import type {
   InitUploadResponse,
   MergeChunksParams,
   MergeChunksResponse,
-  UploadProgressResponse,
 } from "../types";
 
 export const fileAPI = {
@@ -26,16 +25,6 @@ export const fileAPI = {
    */
   uploadSingleChunk: (formData: FormData): Promise<ResponseData<null>> => {
     return request<null, FormData>("file/upload-chunk", "POST", formData);
-  },
-
-  /**
-   * 获取上传进度
-   */
-  getUploadProgress: (uploadId: string): Promise<ResponseData<UploadProgressResponse>> => {
-    return request<UploadProgressResponse, void>(
-      `file/progress/${uploadId}`,
-      "GET"
-    );
   },
 
   /**
