@@ -1,5 +1,5 @@
 import { Attachments, Sender } from "@ant-design/x";
-import { Button, Badge } from "antd";
+import { Button, Badge, Switch, Dropdown } from "antd";
 import {
   CloudDownloadOutlined,
   LinkOutlined,
@@ -13,9 +13,12 @@ const MessageSender: React.FC<MessageSenderProps> = ({ isNewConv = false }) => {
     value,
     isOpen,
     fileList,
+    modelList,
     sending,
     uploading,
     currentConv,
+    selectedModel,
+    networkEnabled,
     senderRef,
     attachmentsRef,
     setValue,
@@ -23,6 +26,8 @@ const MessageSender: React.FC<MessageSenderProps> = ({ isNewConv = false }) => {
     setFileList,
     handleMessageSubmit,
     interceptFile,
+    handleClick,
+    handleSwitch,
   } = useMessageSender({ isNewConv });
 
   return (
@@ -35,6 +40,44 @@ const MessageSender: React.FC<MessageSenderProps> = ({ isNewConv = false }) => {
         onSubmit={handleMessageSubmit}
         placeholder={isNewConv ? "输入消息开始新对话..." : "输入消息..."}
         disabled={(!isNewConv && !currentConv) || uploading}
+        footer={() => {
+          return (
+            <div className="flex items-center gap-4">
+              <Badge
+                dot={fileList.length > 0 && !isOpen}
+                count={fileList.length}
+                color="blue"
+              >
+                <Button
+                  type="text"
+                  icon={uploading ? <LoadingOutlined /> : <LinkOutlined />}
+                  onClick={() => setIsOpen(!isOpen)}
+                  disabled={uploading}
+                />
+              </Badge>
+              <div className="flex items-center gap-1 text-gray-500 text-sm">
+                <span>联网搜索</span>
+                <Switch
+                  size="small"
+                  checked={networkEnabled}
+                  onChange={handleSwitch}
+                />
+              </div>
+              <div className="gap-1 text-gray-500 text-sm hover:text-blue-400 hover:cursor-pointer">
+                <Dropdown
+                  menu={{
+                    items: modelList,
+                    onClick: handleClick,
+                    selectedKeys: [selectedModel],
+                  }}
+                  arrow
+                >
+                  <span>模型: {selectedModel}</span>
+                </Dropdown>
+              </div>
+            </div>
+          );
+        }}
         header={
           <Sender.Header
             title="上传附件"
@@ -60,20 +103,6 @@ const MessageSender: React.FC<MessageSenderProps> = ({ isNewConv = false }) => {
               getDropContainer={() => senderRef?.current?.nativeElement}
             />
           </Sender.Header>
-        }
-        prefix={
-          <Badge
-            dot={fileList.length > 0 && !isOpen}
-            count={fileList.length}
-            color="blue"
-          >
-            <Button
-              type="text"
-              icon={uploading ? <LoadingOutlined /> : <LinkOutlined />}
-              onClick={() => setIsOpen(!isOpen)}
-              disabled={uploading}
-            />
-          </Badge>
         }
       />
     </div>

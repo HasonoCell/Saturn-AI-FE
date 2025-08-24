@@ -1,7 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { Outlet } from "react-router";
-import { UserAvatar, ConversationSidebar, AILogo, MessageSearcher } from "../index";
-import { MenuFoldOutlined, MenuUnfoldOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  UserAvatar,
+  ConversationSidebar,
+  AILogo,
+  MessageSearcher,
+} from "../index";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 
 const AILayout = () => {
   const [isCollapse, setIsCollapse] = useState(false);
@@ -9,16 +17,16 @@ const AILayout = () => {
 
   // 键盘快捷键支持 (Ctrl+K 或 Cmd+K)
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
       e.preventDefault();
       setSearchVisible(true);
     }
   }, []);
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 
@@ -33,13 +41,6 @@ const AILayout = () => {
           {!isCollapse && <AILogo />}
           {!isCollapse && <p className="font-bold">Saturn AI</p>}
           <div className="flex items-center gap-2">
-            {!isCollapse && (
-              <SearchOutlined
-                onClick={() => setSearchVisible(true)}
-                className="text-gray-600 cursor-pointer hover:text-blue-500 transition-colors p-1 rounded hover:bg-gray-100"
-                title="搜索消息 (Ctrl+K)"
-              />
-            )}
             {isCollapse ? (
               <MenuUnfoldOutlined
                 onClick={() => setIsCollapse(false)}
@@ -62,9 +63,9 @@ const AILayout = () => {
       </div>
 
       {/* 搜索浮层 */}
-      <MessageSearcher 
-        isOpen={searchVisible} 
-        onClose={() => setSearchVisible(false)} 
+      <MessageSearcher
+        isOpen={searchVisible}
+        onClose={() => setSearchVisible(false)}
       />
     </div>
   );

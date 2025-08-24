@@ -5,6 +5,7 @@ import {
   MessageOutlined,
   DeleteOutlined,
   SearchOutlined,
+  CommentOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { useConversationStore } from "../../../stores";
@@ -52,6 +53,10 @@ const ConversationSidebar = () => {
     setIsOpen(false);
   };
 
+  const handleToggleAgent = () => {
+    navigate("/agent");
+  };
+
   return (
     <div className="h-full flex flex-col max-h-screen overflow-hidden">
       {/* 创建新对话按钮 */}
@@ -67,7 +72,7 @@ const ConversationSidebar = () => {
       </div>
 
       {/* 搜索对话按钮 */}
-      <div className="p-4 border-b flex-shrink-0">
+      <div className="p-4 flex-shrink-0">
         <Button
           type="primary"
           icon={<SearchOutlined />}
@@ -75,6 +80,18 @@ const ConversationSidebar = () => {
           className="w-full"
         >
           <span>搜索对话</span>
+        </Button>
+      </div>
+
+      {/* 切换Agent页面按钮 */}
+      <div className="p-4 border-b flex-shrink-0">
+        <Button
+          type="primary"
+          icon={<CommentOutlined />}
+          onClick={handleToggleAgent}
+          className="w-full"
+        >
+          <span>Agent</span>
         </Button>
       </div>
 

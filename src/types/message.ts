@@ -14,6 +14,8 @@ export interface MessageType {
   content: string;
   role: MessageRole;
   conversationId: string;
+  model: string;
+  network: boolean;
   createdAt: Date;
 }
 
@@ -21,6 +23,8 @@ export interface MessageType {
 export interface SendUserMessageRequest {
   conversationId: string;
   content: string;
+  model: string;
+  network: boolean;
 }
 
 export interface SendUserMessageResponse {
@@ -30,6 +34,8 @@ export interface SendUserMessageResponse {
 // 自动创建对话并发送第一条消息的请求体类型
 export interface FirstMessageRequest {
   content: string;
+  model: string;
+  network: boolean;
 }
 
 // 自动创建对话并发送第一条消息的返回类型

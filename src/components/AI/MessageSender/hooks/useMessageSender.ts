@@ -20,7 +20,7 @@ import type {
   UploadEventType,
 } from "../types";
 import type { RcFile } from "antd/es/upload";
-import type { GetRef, GetProp } from "antd";
+import type { GetRef, GetProp, MenuProps, SwitchProps } from "antd";
 import type { AttachmentsProps } from "@ant-design/x";
 
 export const useMessageSender = ({
@@ -29,6 +29,20 @@ export const useMessageSender = ({
   const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB 每切片
   const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB 最大文件大小
   const ALLOWED_FILE_TYPES = ["image/*"];
+  const modelList: MenuProps["items"] = [
+    {
+      key: "qwen-turbo",
+      label: "Qwen-Turbo",
+    },
+    {
+      key: "qwen-max",
+      label: "Qwen-Max",
+    },
+    {
+      key: "qwen-plus",
+      label: "Qwen-Plus",
+    },
+  ];
 
   const [value, setValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -41,12 +55,24 @@ export const useMessageSender = ({
   const attachmentsRef = useRef<GetRef<typeof Attachments>>(null);
   const senderRef = useRef<GetRef<typeof Sender>>(null);
   const currentUploadEventRef = useRef<UploadEventType | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string>("qwen-turbo");
+  const [networkEnabled, setNetworkEnabled] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const { sending, addMessage, updateMessage, removeMessage, setSending } =
     useMessageStore();
   const { currentConv, setCurrentConv, addConv } = useConversationStore();
+
+  // 处理下拉菜单点击
+  const handleClick: MenuProps["onClick"] = ({ key }) => {
+    setSelectedModel(key);
+  };
+
+  // 处理开关切换
+  const handleSwitch: SwitchProps["onChange"] = (checked: boolean) => {
+    setNetworkEnabled(checked);
+  };
 
   // 创建消息
   const createMessage = (
@@ -60,6 +86,8 @@ export const useMessageSender = ({
         content,
         role: "assistant" as const,
         conversationId: conversationId,
+        model: selectedModel,
+        network: networkEnabled,
         createdAt: new Date(),
       };
 
@@ -71,6 +99,8 @@ export const useMessageSender = ({
       content,
       role: "user" as const,
       conversationId: conversationId,
+      model: selectedModel,
+      network: networkEnabled,
       createdAt: new Date(),
     };
 
@@ -141,7 +171,9 @@ export const useMessageSender = ({
   const handleNewConversation = async (userContent: string) => {
     // 发送用户消息并创建对话
     const result = await messageService.autoCreateAndSendFirstMessage(
-      userContent
+      userContent,
+      networkEnabled,
+      selectedModel
     );
 
     if (!result) {
@@ -176,7 +208,9 @@ export const useMessageSender = ({
 
     const result = await messageService.sendUserMessage(
       currentConv.id,
-      userContent
+      userContent,
+      networkEnabled,
+      selectedModel
     );
 
     if (!result?.success) {
@@ -335,6 +369,9 @@ export const useMessageSender = ({
     sending,
     uploading,
     currentConv,
+    modelList,
+    selectedModel,
+    networkEnabled,
 
     // refs
     senderRef,
@@ -351,5 +388,7 @@ export const useMessageSender = ({
     createMessage,
     createConv,
     interceptFile: interceptAndHandleFile,
+    handleClick,
+    handleSwitch,
   };
 };

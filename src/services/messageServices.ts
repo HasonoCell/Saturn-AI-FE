@@ -15,12 +15,16 @@ export const messageService = {
    */
   async sendUserMessage(
     conversationId: string,
-    content: string
+    content: string,
+    network: boolean,
+    model: string
   ): Promise<SendUserMessageResponse | null> {
     try {
       const params: SendUserMessageRequest = {
         conversationId,
         content,
+        model,
+        network,
       };
       const response = await messageAPI.sendUserMessage(params);
 
@@ -38,11 +42,15 @@ export const messageService = {
    * 自动创建对话并发送第一条消息
    */
   async autoCreateAndSendFirstMessage(
-    content: string
+    content: string,
+    network: boolean,
+    model: string
   ): Promise<FirstMessageResponse | null> {
     try {
       const params: FirstMessageRequest = {
         content,
+        network,
+        model,
       };
 
       const response = await messageAPI.autoCreateAndSendFirstMessage(params);
