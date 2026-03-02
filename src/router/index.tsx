@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import App from "../App";
-import { Home, Conversation, Login, Register, Agent } from "../pages";
+import { Home, Conversation, Login, Register, AgentPage } from "../pages";
 import {
   AILayout,
   AuthTransition,
@@ -56,7 +56,7 @@ const router = createBrowserRouter([
           },
           {
             path: "agent",
-            Component: Agent,
+            Component: AgentPage,
           },
         ],
       },

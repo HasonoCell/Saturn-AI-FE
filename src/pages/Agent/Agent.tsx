@@ -36,7 +36,7 @@ const mockAgents: Agent[] = [
   },
 ];
 
-const Agent = () => {
+const AgentPage = () => {
   return (
     <div className="p-4 flex gap-3 flex-wrap">
       {mockAgents.map((agent) => (
@@ -64,4 +64,4 @@ const Agent = () => {
   );
 };
 
-export default Agent;
+export default AgentPage;
